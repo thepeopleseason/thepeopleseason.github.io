@@ -29,6 +29,17 @@ function manify(input) {
   input = input.replace(/}/g,"'></abbr>");
   return input;
 }
+
+function onLoad() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mv = urlParams.get('mv');
+  if (mv) {
+    fetch(sf_url.concat('t%3Acreature+mv%3D' + mv))
+      .then( response => { return response.json() })
+      .then((data) => { populate_card(data) });
+  }
+}
+
 </script>
 <style>
 @media print {
@@ -39,7 +50,7 @@ function manify(input) {
 </style>
 <link rel="stylesheet" href="https://thepeopleseason.github.io/planechase/card-symbols.css">
 </head>
-<body>
+<body onLoad="onLoad()">
 <table>
 <tr><td id="name"></td><td id="mana_cost" align="right"></td></tr>
 <tr><td id="img" colspan="2" align="center"><img id="art_crop" /></td></tr>
