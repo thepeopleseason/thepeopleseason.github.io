@@ -91,6 +91,7 @@ td {
 
 <button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Mo </button>
 <button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Sto </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Snap </button>
 
 
 </body>
