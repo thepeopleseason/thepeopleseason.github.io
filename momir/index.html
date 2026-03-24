@@ -43,7 +43,7 @@ function onLoad() {
 </script>
 <style>
 td {
-  font-size: x-large;
+  font-size: 80px;
 }
 
 @media print {
@@ -64,8 +64,28 @@ td {
 <tr><td id="p_t" colspan="2" align="right"></td></tr>
 <tr><td id="artist" colspan="2" align="center"></td></tr>
 </table>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + prompt('Enter mana value:'))).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="align-items: center;"> Mo Card </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + prompt('Enter mana value:'))).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="align-items: center;"> Sto Card </button>
+
+<select id="mana_value" name="mv" style="font-size: 50px">
+  <option>1</option>
+  <option>2</option>
+  <option>3</option>
+  <option>4</option>
+  <option>5</option>
+  <option>6</option>
+  <option>7</option>
+  <option>8</option>
+  <option>9</option>
+  <option>10</option>
+  <option>11</option>
+  <option>12</option>
+  <option>13</option>
+  <option>14</option>
+  <option>15</option>
+  <option>16</option>
+</select>
+
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 50px"> Mo </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 50px"> Sto </button>
 
 </body>
 </html>
