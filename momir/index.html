@@ -4,31 +4,49 @@
 <script>
 const sf_url = "https://api.scryfall.com/cards/random?q=";
 
-function populate_card(data) {
-  var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text' ];
+function generate_card(data) {
+  var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text', 'art_crop', 'p_t' ];
   for (const idx in pop) {
-    if (data[pop[idx]]) {
-      document.getElementById(pop[idx]).innerHTML = manify(data[pop[idx]]);
+    if (pop[idx] == 'art_crop') {
+      document.getElementById(pop[idx]+"2").src = "";
     }
     else {
-      document.getElementById(pop[idx]).innerHTML = "";
+      document.getElementById(pop[idx]+"2").innerHTML = "";
     }
   }
-  document.getElementById('art_crop').src = data.image_uris.art_crop;
-  if (data.power > -1) {
-    document.getElementById('p_t').innerHTML = data.power + "/" + data.toughness;
+  if (data.card_faces) {
+    populate_face(data.card_faces[0]);
+    populate_face(data.card_faces[1], "2");
   }
   else {
-    document.getElementById('p_t').innerHTML = "";
+    populate_face(data);
   }
   document.getElementById('link').innerHTML = "<a href='"+data.scryfall_uri+
     "'>View on Scryfall.com</a>";
+}
+
+function populate_face(face, offset="") {
+  var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text' ];
+  for (const idx in pop) {
+    if (face[pop[idx]]) {
+      document.getElementById(pop[idx]+offset).innerHTML = manify(face[pop[idx]]);
+    }
+    else {
+      document.getElementById(pop[idx]+offset).innerHTML = "";
+    }
+  }
+  document.getElementById('art_crop'+offset).src = face.image_uris.art_crop;
+  document.getElementById('p_t'+offset).innerHTML = (face.power > -1) ? face.power + "/" + face.toughness : "";
 }
 
 function manify(input) {
   input = input.replace(/\n/g,"<br/>");
   input = input.replace(/{/g,"<abbr class='card-symbol card-symbol-");
   input = input.replace(/}/g,"'></abbr>");
+  input = input.replace(/card-symbol-(.)\/(.)/g,
+                        function(match, $1, $2) {
+                          return ("card-symbol-"+$1+$2);
+                        });
   return input;
 }
 
@@ -38,7 +56,7 @@ function onLoad() {
   if (mv) {
     fetch(sf_url.concat('t%3Acreature+mv%3D' + mv))
       .then( response => { return response.json() })
-      .then((data) => { populate_card(data) });
+      .then((data) => { generate_card(data) });
   }
 }
 
@@ -67,6 +85,13 @@ td {
 <tr><td id="flavor_text" colspan="2" style="font-style: italic; font-size: x-large;"></td></tr>
 <tr><td id="artist" style="font-size: large"></td>
   <td id="link" align="right" style="font-size: large"></tr>
+<tr><td id="name2"></td><td id="mana_cost2" align="right"></td></tr>
+<tr><td id="img" colspan="2" align="center"><img id="art_crop2" /></td></tr>
+<tr><td id="type_line2" colspan="2"></td></tr>
+<tr><td id="oracle_text2" colspan="2"></td></tr>
+<tr><td id="p_t2" colspan="2" align="right"></td></tr>
+<tr><td id="flavor_text2" colspan="2" style="font-style: italic; font-size: x-large;"></td></tr>
+<tr><td id="artist2" style="font-size: large" colspan="2"></td></tr>
 </table>
 
 <label for="mv" style="font-size: 35px">Mana value:</label>
@@ -89,10 +114,9 @@ td {
   <option>16</option>
 </select>
 
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Mo </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Sto </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { populate_card(data) });" style="font-size: 35px"> Snap </button>
-
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Mo </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Sto </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Snap </button>
 
 </body>
 </html>
