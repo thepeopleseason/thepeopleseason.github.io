@@ -23,6 +23,8 @@ function generate_card(data) {
   }
   document.getElementById('link').innerHTML = "<a href='"+data.scryfall_uri+
     "'>View on Scryfall.com</a>";
+  document.getElementById('title').hidden = true;
+  document.getElementById('instructions').hidden = true;
 }
 
 function populate_face(face, offset="") {
@@ -76,6 +78,18 @@ td {
 <link rel="stylesheet" href="card-symbols.css">
 </head>
 <body onLoad="onLoad()">
+
+<h1 id="title">Momir Basic Card Generator</h1>
+
+<p id="instructions"> <strong>Instructions:</strong><br/>Choose a mana
+value, then click on Mo for a random <a
+href="https://scryfall.com/card/pmoa/61/momir-vig-simic-visionary-avatar">Momir
+Vig</a> card, "Sto" for a random <a
+href="https://scryfall.com/card/pmoa/77/stonehewer-giant-avatar">Stonehewer
+Giant</a> card, or "Snap" for a random <a
+href="https://scryfall.com/card/unk/RZ06h/the-snapstone-wielder">Snapstone
+Wielder</a> card.</p>
+
 <table>
 <tr><td id="name"></td><td id="mana_cost" align="right"></td></tr>
 <tr><td id="img" colspan="2" align="center"><img id="art_crop" /></td></tr>
@@ -114,9 +128,9 @@ td {
   <option>16</option>
 </select>
 
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Mo </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Sto </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px"> Snap </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
+<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from The Snapstone Wielder"> Snap </button>
 
 </body>
 </html>
