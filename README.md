@@ -1,7 +1,7 @@
 thepeopleseason.github.io
 =========================
 * [Planechase](/planechase/)
-** [The Eternities Map](/planechase/em.html)
+  * [The Eternities Map](/planechase/em.html)
 * [Archenemy](/mtg_archenemy/)
 
 * [MTG Bounties](/mtg_bounty/)
