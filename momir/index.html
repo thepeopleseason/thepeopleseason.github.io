@@ -79,9 +79,11 @@ td {
 </head>
 <body onLoad="onLoad()">
 
-<h1 id="title">Momir Basic Card Generator</h1>
+<h1 id="title">Random Magic Card Generator</h1>
 
-<p id="instructions"> <strong>Instructions:</strong><br/>Choose a mana
+<p id="instructions"> Consider use with a
+<a href="https://bsky.app/profile/thepeopleseason.bsky.social/post/3mhszlmscms2k">portable thermal label printer</a>.
+<br/><strong>Instructions:</strong><br/>Choose a mana
 value, then click on Mo for a random <a
 href="https://scryfall.com/card/pmoa/61/momir-vig-simic-visionary-avatar">Momir
 Vig</a> card, "Sto" for a random <a
@@ -108,7 +110,8 @@ Wielder</a> card.</p>
 <tr><td id="artist2" style="font-size: large" colspan="2"></td></tr>
 </table>
 
-<label for="mv" style="font-size: 35px">Mana value:</label>
+  <div>
+  <label for="mv" style="font-size: 35px">Mana value:</label>
 <select id="mana_value" name="mv" style="font-size: 35px;" class="no-print">
   <option>1</option>
   <option>2</option>
@@ -130,9 +133,11 @@ Wielder</a> card.</p>
 
 <button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
 <button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from The Snapstone Wielder"> Snap </button>
+  <button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from The Snapstone Wielder"> Snap </button>
+  </div>
 
-<div class="footer"> Unofficial Fan Content permitted under the Fan
+  <div class="footer">
+  <hr>Unofficial Fan Content permitted under the Fan
 Content Policy. Not approved/endorsed by Wizards. Portions of the
 materials used are property of <a
 href="https://magic.wizards.com/">Wizards of the Coast</a>. ©Wizards
