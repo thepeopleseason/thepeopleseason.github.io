@@ -7,6 +7,6 @@ thepeopleseason.github.io
   * [Planechase](/planechase/)
     * [The Eternities Map](/planechase/em.html)
   * [Archenemy](/mtg_archenemy/)
-  * [MTG Bounties](/mtg_bounty/)
+  * [Magic the Gathering Bounties (OTJ)](/mtg_bounty/)
   * [MTG Momir Vig/Stonehewer Giant/Snapstone Wielder Tool](/momir/)
-
+  * [Sword of ____ and ____](/blankandblank/)
