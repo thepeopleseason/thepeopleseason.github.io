@@ -1,28 +1,96 @@
 ﻿<html>
 <head>
-<title>Momir Simulator</title>
+<title>MoJhoStoSnap Simulator</title>
 <script>
 const sf_url = "https://api.scryfall.com/cards/random?q=";
 
-function generate_card(data) {
+function generate_cards(type, query) {
   var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text', 'art_crop', 'p_t' ];
+  var divs = ['2','ja','j2a','j3a'];
   for (const idx in pop) {
-    if (pop[idx] == 'art_crop') {
-      document.getElementById(pop[idx]+"2").src = "";
-    }
-    else {
-      document.getElementById(pop[idx]+"2").innerHTML = "";
+    for (const didx in divs) {
+      var element = document.getElementById(pop[idx]+divs[didx]);
+      if (pop[idx] == 'art_crop') {
+        if (element) {
+          delete(element.src);
+        }
+      }
+      else {
+        if (element) {
+          element.innerHTML = "";
+        }
+      }
     }
   }
-  if (data.card_faces) {
-    populate_face(data.card_faces[0]);
-    populate_face(data.card_faces[1], "2");
+
+  if (type == 'jho') {
+    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
+      if (data.card_faces) {
+        if (!data.card_faces[0].image_uris) {
+          data.card_faces[0].image_uris = data.image_uris;
+        }
+        if (!data.card_faces[0].scryfall_uri) {
+          data.card_faces[0].scryfall_uri = data.scryfall_uri;
+        }
+        populate_face(data.card_faces[0], "j");
+        populate_face(data.card_faces[1], "ja");
+      }
+      else {
+        populate_face(data, "j");
+      }
+    });
+    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
+      if (data.card_faces) {
+        if (!data.card_faces[0].image_uris) {
+          data.card_faces[0].image_uris = data.image_uris;
+        }
+        if (!data.card_faces[0].scryfall_uri) {
+          data.card_faces[0].scryfall_uri = data.scryfall_uri;
+        }
+        populate_face(data.card_faces[0], "j2");
+        populate_face(data.card_faces[1], "j2a");
+      }
+      else {
+        populate_face(data, "j2");
+      }
+    });
+    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
+      if (data.card_faces) {
+        if (!data.card_faces[0].image_uris) {
+          data.card_faces[0].image_uris = data.image_uris;
+        }
+        if (!data.card_faces[0].scryfall_uri) {
+          data.card_faces[0].scryfall_uri = data.scryfall_uri;
+        }
+        populate_face(data.card_faces[0], "j3");
+        populate_face(data.card_faces[1], "j3a");
+      }
+      else {
+        populate_face(data, "j3");
+      }
+    });
+    document.getElementById('jcards-grid').style.display = 'grid';
+    document.getElementById('mscards').style.display = 'none';
   }
   else {
-    populate_face(data);
+    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
+      if (data.card_faces) {
+        if (!data.card_faces[0].image_uris) {
+          data.card_faces[0].image_uris = data.image_uris;
+        }
+        if (!data.card_faces[0].scryfall_uri) {
+          data.card_faces[0].scryfall_uri = data.scryfall_uri;
+        }
+        populate_face(data.card_faces[0]);
+        populate_face(data.card_faces[1], "2");
+      }
+      else {
+        populate_face(data);
+      }
+    });
+    document.getElementById('jcards-grid').style.display = 'none';
+    document.getElementById('mscards').style.display = 'block';
   }
-  document.getElementById('link').innerHTML = "<a href='"+data.scryfall_uri+
-    "'>View on Scryfall.com</a>";
   document.getElementById('title').hidden = true;
   document.getElementById('instructions').hidden = true;
 }
@@ -37,8 +105,13 @@ function populate_face(face, offset="") {
       document.getElementById(pop[idx]+offset).innerHTML = "";
     }
   }
-  document.getElementById('art_crop'+offset).src = face.image_uris.art_crop;
-  document.getElementById('p_t'+offset).innerHTML = (face.power > -1) ? face.power + "/" + face.toughness : "";
+  if(face.image_uris) {
+    document.getElementById('art_crop'+offset).src = face.image_uris.art_crop;
+  }
+  if (face.scryfall_uri) {
+    document.getElementById('link'+offset).innerHTML = "<a href='"+face.scryfall_uri+
+      "'>View on Scryfall.com</a>";
+  }
 }
 
 function manify(input) {
@@ -64,16 +137,46 @@ function onLoad() {
 
 </script>
 <style>
-td {
-  font-size: 50px;
-}
+  body { font-size: large; }
 
-@media print {
-  .no-print, no-print * {
-    font-size: 50px;
-    display: none !important;
+  @media print {
+    .no-print, no-print * {
+      font-size: 25px;
+      display: none !important;
+    }
   }
-}
+  .jcards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0 1rem;
+  }
+  .card-row-between {
+    justify-content: space-between;
+  }
+  .card-row-center {
+    justify-content: center;
+  }
+  .card-row {
+    display: flex;
+  }
+  .card-row-between {
+    justify-content: space-between;
+  }
+  .card-row-center {
+    justify-content: center;
+  }
+  .card-row-end {
+    justify-content: flex-end;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .flavor-text {
+    font-style: italic;
+  }
+  .text-large {
+    font-size: large;
+  }
 </style>
 <link rel="stylesheet" href="card-symbols.css">
 </head>
@@ -92,27 +195,133 @@ Giant</a> card, or "Snap" for a random <a
 href="https://scryfall.com/card/unk/RZ06h/the-snapstone-wielder">Snapstone
 Wielder</a> card.</p>
 
-<table>
-<tr><td id="name"></td><td id="mana_cost" align="right"></td></tr>
-<tr><td id="img" colspan="2" align="center"><img id="art_crop" /></td></tr>
-<tr><td id="type_line" colspan="2"></td></tr>
-<tr><td id="oracle_text" colspan="2"></td></tr>
-<tr><td id="p_t" colspan="2" align="right"></td></tr>
-<tr><td id="flavor_text" colspan="2" style="font-style: italic; font-size: x-large;"></td></tr>
-<tr><td id="artist" style="font-size: large"></td>
-  <td id="link" align="right" style="font-size: large"></tr>
-<tr><td id="name2"></td><td id="mana_cost2" align="right"></td></tr>
-<tr><td id="img" colspan="2" align="center"><img id="art_crop2" /></td></tr>
-<tr><td id="type_line2" colspan="2"></td></tr>
-<tr><td id="oracle_text2" colspan="2"></td></tr>
-<tr><td id="p_t2" colspan="2" align="right"></td></tr>
-<tr><td id="flavor_text2" colspan="2" style="font-style: italic; font-size: x-large;"></td></tr>
-<tr><td id="artist2" style="font-size: large" colspan="2"></td></tr>
-</table>
+<div id="mscards" class="mscards">
+  <div class="card">
+  <div class="card-row card-row-between">
+    <span id="name"></span>
+    <span id="mana_cost" class="text-right"></span>
+  </div>
+  <div class="card-row card-row-center"><img id="art_crop" /></div>
+  <div class="card-row"><span id="type_line"></span></div>
+  <div class="card-row"><span id="oracle_text"></span></div>
+  <div class="card-row card-row-end"><span id="p_t"></span></div>
+  <div class="card-row"><span id="flavor_text" class="flavor-text"></span></div>
+  <div class="card-row card-row-between">
+    <span id="artist"></span>
+    <span id="link" class="text-right"></span>
+  </div>
 
-  <div>
-  <label for="mv" style="font-size: 35px">Mana value:</label>
-<select id="mana_value" name="mv" style="font-size: 35px;" class="no-print">
+  <div class="card-row card-row-between">
+    <span id="name2"></span>
+    <span id="mana_cost2" class="text-right"></span>
+  </div>
+  <div class="card-row card-row-center"><img id="art_crop2" /></div>
+  <div class="card-row"><span id="type_line2"></span></div>
+  <div class="card-row"><span id="oracle_text2"></span></div>
+  <div class="card-row card-row-end"><span id="p_t2"></span></div>
+  <div class="card-row"><span id="flavor_text2" class="flavor-text"></span></div>
+  <div class="card-row"><span id="artist2"></span></div>
+  </div>
+</div>
+
+<div id="jcards-grid" class="jcards-grid">
+  <div class="card">
+    <div class="card-row card-row-between">
+      <span id="namej"></span>
+      <span id="mana_costj" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropj" width="275" />
+    </div>
+    <div class="card-row"><span id="type_linej"></span></div>
+    <div class="card-row"><span id="oracle_textj"></span></div>
+    <div class="card-row"><span id="flavor_textj" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistj"></span>
+      <span id="linkj" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-between">
+      <span id="nameja"></span>
+      <span id="mana_costja" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropja" width="275" />
+    </div>
+    <div class="card-row"><span id="type_lineja"></span></div>
+    <div class="card-row"><span id="oracle_textja"></span></div>
+    <div class="card-row"><span id="flavor_textja" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistja"></span>
+      <span id="linkja" class="text-right"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-row card-row-between">
+      <span id="namej2"></span>
+      <span id="mana_costj2" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropj2" width="275" />
+    </div>
+    <div class="card-row"><span id="type_linej2"></span></div>
+    <div class="card-row"><span id="oracle_textj2"></span></div>
+    <div class="card-row"><span id="flavor_textj2" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistj2"></span>
+      <span id="linkj2" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-between">
+      <span id="namej2a"></span>
+      <span id="mana_costj2a" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropj2a" width="275" />
+    </div>
+    <div class="card-row"><span id="type_linej2a"></span></div>
+    <div class="card-row"><span id="oracle_textj2a"></span></div>
+    <div class="card-row"><span id="flavor_textj2a" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistj2a"></span>
+      <span id="linkj2a" class="text-right"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-row card-row-between">
+      <span id="namej3"></span>
+      <span id="mana_costj3" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropj3" width="275" />
+    </div>
+    <div class="card-row"><span id="type_linej3"></span></div>
+    <div class="card-row"><span id="oracle_textj3"></span></div>
+    <div class="card-row"><span id="flavor_textj3" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistj3"></span>
+      <span id="linkj3" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-between">
+      <span id="namej3a"></span>
+      <span id="mana_costj3a" class="text-right"></span>
+    </div>
+    <div class="card-row card-row-center">
+      <img id="art_cropj3a" width="275" />
+    </div>
+    <div class="card-row"><span id="type_linej3a"></span></div>
+    <div class="card-row"><span id="oracle_textj3a"></span></div>
+    <div class="card-row"><span id="flavor_textj3a" class="flavor-text"></span></div>
+    <div class="card-row card-row-between">
+      <span id="artistj3a"></span>
+      <span id="linkj3a" class="text-right"></span>
+    </div>
+  </div>
+</div>
+
+<div class="no-print">
+<label for="mv">Mana value:</label>
+<select id="mana_value" name="mv">
   <option>1</option>
   <option>2</option>
   <option>3</option>
@@ -126,17 +335,18 @@ Wielder</a> card.</p>
   <option>11</option>
   <option>12</option>
   <option>13</option>
-  <option>14</option>
   <option>15</option>
   <option>16</option>
 </select>
 
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Acreature+mv%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
-<button class="no-print" type="button" onClick="fetch(sf_url.concat('t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value)).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
-  <button class="no-print" type="button" onClick="fetch(sf_url.concat('-t%3Aland')).then( response => { return response.json() }).then((data) => { generate_card(data) });" style="font-size: 35px" title="Generate a card from The Snapstone Wielder"> Snap </button>
+  <button type="button" onClick="generate_cards('mo','t%3Acreature+mv%3D' + document.getElementById('mana_value').value);" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
+  <button class="no-print" type="button" onClick="generate_cards('jho','t%3Ainstant');" title="Get 3 Instant spells"> Jho: Instants </button>
+  <button class="no-print" type="button" onClick="generate_cards('jho','t%3Asorcery');" title="Get 3 Sorcery spells"> Jho: Sorceries </button>
+  <button type="button" onClick="generate_cards('sto','t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value);" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
+  <button type="button" onClick="generate_cards('snap','-t%3Aland');" title="Generate a card from The Snapstone Wielder"> Snap </button>
   </div>
 
-  <div class="footer">
+  <div class="footer no-print">
   <hr>Unofficial Fan Content permitted under the Fan
 Content Policy. Not approved/endorsed by Wizards. Portions of the
 materials used are property of <a
