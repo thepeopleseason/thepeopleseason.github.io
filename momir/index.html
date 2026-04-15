@@ -4,16 +4,14 @@
 <script>
 const sf_url = "https://api.scryfall.com/cards/random?q=";
 
-function generate_cards(type, query) {
-  var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text', 'art_crop', 'p_t' ];
-  var divs = ['2','ja','j2a','j3a'];
+function clean_canvas() {
+  var pop = ['name', 'mana_cost', 'type_line', 'oracle_text', 'artist', 'flavor_text', 'art_crop', 'p_t', 'link' ];
+  var divs = ['', '2', 'j', 'ja', 'j2', 'j2a', 'j3', 'j3a'];
   for (const idx in pop) {
     for (const didx in divs) {
       var element = document.getElementById(pop[idx]+divs[didx]);
       if (pop[idx] == 'art_crop') {
-        if (element) {
-          delete(element.src);
-        }
+        element.parentElement.innerHTML = '<img class="image" id="'+pop[idx]+divs[didx]+'">';
       }
       else {
         if (element) {
@@ -22,75 +20,50 @@ function generate_cards(type, query) {
       }
     }
   }
+}
 
-  if (type == 'jho') {
-    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
-      if (data.card_faces) {
-        if (!data.card_faces[0].image_uris) {
-          data.card_faces[0].image_uris = data.image_uris;
-        }
-        if (!data.card_faces[0].scryfall_uri) {
-          data.card_faces[0].scryfall_uri = data.scryfall_uri;
-        }
-        populate_face(data.card_faces[0], "j");
-        populate_face(data.card_faces[1], "ja");
-      }
-      else {
-        populate_face(data, "j");
-      }
-    });
-    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
-      if (data.card_faces) {
-        if (!data.card_faces[0].image_uris) {
-          data.card_faces[0].image_uris = data.image_uris;
-        }
-        if (!data.card_faces[0].scryfall_uri) {
-          data.card_faces[0].scryfall_uri = data.scryfall_uri;
-        }
-        populate_face(data.card_faces[0], "j2");
-        populate_face(data.card_faces[1], "j2a");
-      }
-      else {
-        populate_face(data, "j2");
-      }
-    });
-    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
-      if (data.card_faces) {
-        if (!data.card_faces[0].image_uris) {
-          data.card_faces[0].image_uris = data.image_uris;
-        }
-        if (!data.card_faces[0].scryfall_uri) {
-          data.card_faces[0].scryfall_uri = data.scryfall_uri;
-        }
-        populate_face(data.card_faces[0], "j3");
-        populate_face(data.card_faces[1], "j3a");
-      }
-      else {
-        populate_face(data, "j3");
-      }
-    });
-    document.getElementById('jcards-grid').style.display = 'grid';
-    document.getElementById('mscards').style.display = 'none';
+function normalize_card_faces(data) {
+  if (!data.card_faces) return null;
+
+  for (const face of data.card_faces) {
+    if (!face.image_uris) face.image_uris = data.image_uris;
+    if (!face.scryfall_uri) face.scryfall_uri = data.scryfall_uri;
   }
-  else {
-    fetch(sf_url.concat(query)).then( response => { return response.json() }).then(data => {
-      if (data.card_faces) {
-        if (!data.card_faces[0].image_uris) {
-          data.card_faces[0].image_uris = data.image_uris;
-        }
-        if (!data.card_faces[0].scryfall_uri) {
-          data.card_faces[0].scryfall_uri = data.scryfall_uri;
-        }
-        populate_face(data.card_faces[0]);
-        populate_face(data.card_faces[1], "2");
-      }
-      else {
-        populate_face(data);
+  return data.card_faces;
+}
+
+function fetch_and_populate(query, primarySuffix, secondarySuffix) {
+  return fetch(sf_url.concat(query))
+    .then(response => response.json())
+    .then(data => {
+      const faces = normalize_card_faces(data);
+      if (faces) {
+        populate_face(faces[0], primarySuffix);
+        populate_face(faces[1], secondarySuffix);
+      } else {
+        populate_face(data, primarySuffix);
       }
     });
-    document.getElementById('jcards-grid').style.display = 'none';
-    document.getElementById('mscards').style.display = 'block';
+}
+
+function generate_cards(type, query) {
+  clean_canvas();
+
+  const isJho = type === 'jho';
+
+  if (isJho) {
+    const slots = [
+      { primary: "j",  secondary: "ja"  },
+      { primary: "j2", secondary: "j2a" },
+      { primary: "j3", secondary: "j3a" },
+    ];
+    slots.forEach(slot => fetch_and_populate(query, slot.primary, slot.secondary));
+  } else {
+    fetch_and_populate(query, undefined, "2");
   }
+
+  document.getElementById('jcards-grid').style.display = isJho ? 'grid' : 'none';
+  document.getElementById('mscards').style.display = isJho ? 'none' : 'block';
   document.getElementById('title').hidden = true;
   document.getElementById('instructions').hidden = true;
 }
@@ -186,17 +159,6 @@ function onLoad() {
 <body onLoad="onLoad()">
 
 <h1 id="title">Random Magic Card Generator</h1>
-
-<p id="instructions"> Consider use with a
-<a href="https://bsky.app/profile/thepeopleseason.bsky.social/post/3mhszlmscms2k">portable thermal label printer</a>.
-<br/><strong>Instructions:</strong><br/>Choose a mana
-value, then click on Mo for a random <a
-href="https://scryfall.com/card/pmoa/61/momir-vig-simic-visionary-avatar">Momir
-Vig</a> card, "Sto" for a random <a
-href="https://scryfall.com/card/pmoa/77/stonehewer-giant-avatar">Stonehewer
-Giant</a> card, or "Snap" for a random <a
-href="https://scryfall.com/card/unk/RZ06h/the-snapstone-wielder">Snapstone
-Wielder</a> card.</p>
 
 <div id="mscards" class="mscards">
   <div class="card">
@@ -343,11 +305,27 @@ Wielder</a> card.</p>
 </select>
 
   <button type="button" onClick="generate_cards('mo','t%3Acreature+mv%3D' + document.getElementById('mana_value').value);" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
-  <button class="no-print" type="button" onClick="generate_cards('jho','t%3Ainstant');" title="Get 3 Instant spells"> Jho: Instants </button>
+  <button class="no-print" type="button" onClick="generate_cards('jho','t%3Ainstant+set:znr');" title="Get 3 Instant spells"> Jho: Instants </button>
   <button class="no-print" type="button" onClick="generate_cards('jho','t%3Asorcery');" title="Get 3 Sorcery spells"> Jho: Sorceries </button>
   <button type="button" onClick="generate_cards('sto','t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value);" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
   <button type="button" onClick="generate_cards('snap','-t%3Aland');" title="Generate a card from The Snapstone Wielder"> Snap </button>
   </div>
+
+<div id="instructions">
+<p><strong>Instructions:</strong><br/> Choose a mana
+value, then click on Mo for a random creature from <a
+href="https://scryfall.com/card/pmoa/61/momir-vig-simic-visionary-avatar">Momir
+Vig</a>, either "Jho" button for three random instants or sorceries from <a
+href="https://scryfall.com/card/pmoa/69/">Jhoria of the Ghitu</a>,
+"Sto" for a random equipment from <a
+href="https://scryfall.com/card/pmoa/77/stonehewer-giant-avatar">Stonehewer
+Giant</a>, or "Snap" for a random nonland card from <a
+href="https://scryfall.com/card/unk/RZ06h/the-snapstone-wielder">The Snapstone
+Wielder</a>.</p>
+<p> For more information about <a href="https://www.reddit.com/r/magicTCG/comments/fn2rn7/mojhosto_is_an_online_only_format_where_you_can/">Mo-Jho-Sto</a>. </p>
+<p> Consider use with a
+<a href="https://bsky.app/profile/thepeopleseason.bsky.social/post/3mhszlmscms2k">portable thermal label printer</a>.</p>
+</div>
 
   <div class="footer no-print">
   <hr>Unofficial Fan Content permitted under the Fan
