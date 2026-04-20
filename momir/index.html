@@ -81,6 +81,7 @@ function populate_face(face, offset="") {
   if(face.image_uris) {
     document.getElementById('art_crop'+offset).src = face.image_uris.art_crop;
   }
+  document.getElementById('p_t'+offset).innerHTML = (face.power > -1) ? face.power + "/" + face.toughness : "";
   if (face.scryfall_uri) {
     document.getElementById('link'+offset).innerHTML = "<a href='"+face.scryfall_uri+
       "'>View on Scryfall.com</a>";
