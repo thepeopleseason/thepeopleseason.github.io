@@ -30,7 +30,7 @@
   function generate_sword() {
     let sword = [first[Math.floor(Math.random()*first.length)],
                  second[Math.floor(Math.random()*second.length)]]
-    let name = `Sword of ${ sword[0].name } and ${ sword[1].name }`;
+    let name = `Sort of ${ sword[0].name } and ${ sword[1].name }`;
     let effect = `Whenever equipped creature deals combat damage to a player, ${ sword[0].effect } ${ sword[1].effect }<br/><br/>Equip {2}`.replace('~', name);
 
     let output = `<b>${ name}</b>  {3}<br/><hr>Artifact -- Equipment<br/><hr>${effect}<br/><hr/>`;
