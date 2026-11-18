@@ -1,6 +1,6 @@
 ﻿<html>
 <head>
-<title>MoJhoStoSnap Simulator</title>
+<title>Random Card Generators</title>
 <script>
 const sf_url = "https://api.scryfall.com/cards/random?q=";
 
@@ -159,7 +159,7 @@ function onLoad() {
 </head>
 <body onLoad="onLoad()">
 
-<h1 id="title">MoJhoSto Random Magic Card Generator</h1>
+<h1 id="title">Random Magic Card Generator</h1>
 
 <div id="mscards" class="mscards">
   <div class="card">
@@ -308,8 +308,23 @@ function onLoad() {
   <button type="button" onClick="generate_cards('mo','t%3Acreature+mv%3D' + document.getElementById('mana_value').value);" title="Generate a card from Momir Vig, Simic Visionary Vanguard"> Mo </button>
   <button class="no-print" type="button" onClick="generate_cards('jho','t%3Ainstant');" title="Get 3 Instant spells"> Jho: Instants </button>
   <button class="no-print" type="button" onClick="generate_cards('jho','t%3Asorcery');" title="Get 3 Sorcery spells"> Jho: Sorceries </button>
-  <button type="button" onClick="generate_cards('sto','t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value);" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button>
-  <button type="button" onClick="generate_cards('snap','-t%3Aland');" title="Generate a card from The Snapstone Wielder / Discord"> Random </button>
+  <button type="button" onClick="generate_cards('sto','t%3Aequipment+mv<%3D' + document.getElementById('mana_value').value);" title="Generate a card from Stonehewer Giant Vanguard"> Sto </button><br/>
+  <button type="button" onClick="generate_cards('snap','-t%3Aland');" title="Generate a nonland card from The Snapstone Wielder / Discord, Lord of Disharmony"> Random </button>
+  <button type="button" onClick="generate_cards('blu','t%3Aroom');" title="Generate a card from Blu, Mansion Prince"> Blu, Mansion Prince </button>
+  <button type="button" onClick="generate_cards('nissa','t%3Anissa');" title="Generate a card from The Disciple of Nissa"> The Disciple of Nissa </button>
+  <button type="button" onClick="generate_cards('vess','t%3Aliliana');" title="Generate a card from The Disciple of Vess"> The Disciple of Vess </button><br/>
+  <button type="button" onClick="generate_cards('gc','is%3Agamechanger');" title="Generate a card from The Game-Changing Host"> The Game-Changing Host </button>
+  <button type="button" onClick="generate_cards('grixis','ci%3Dgrixis');" title="Generate a card from The King of Grixis"> The King of Grixis </button>
+  <button type="button" onClick="generate_cards('mox','name%3A%2F%5Cbmox%5Cb%2F+f%3Av');" title="Generate a card from The Mox Painter"> The Mox Painter </button>
+  <button type="button" onClick="generate_cards('playful','kw%3Apartner t%3Acreature -stamp%3Aacorn');" title="Generate a card from The Playful Winners"> The Playful Winners </button><br/>
+  <button type="button" onClick="generate_cards('polis','t%3Aplane');" title="Generate a card from Polis, the Planeshifter"> Polis, the Planeshifter </button>
+  <button type="button" onClick="generate_cards('wolves','t%3Awolf t%3Acreature');" title="Generate a Wolf card from The Queen of Wolves"> The Queen of Wolves </button>
+  <button type="button" onClick="generate_cards('postman', 'o%3A%2Fcreate.*token%2F+-o%3A%2Fcopy+of%2F');" title="Generate a card from The Traveling Postman"> The Traveling Postman </button>
+  <button type="button" onClick="generate_cards('twenty','t%3Alesson');" title="Generate a card from Twenty Lessons"> Twenty Lessons </button><br/>
+  <button type="button" onClick="generate_cards('urza','urza f%3Ac');" title="Generate a card from The Urza Finder"> The Urza Finder </button>
+  <button type="button" onClick="generate_cards('wheel','f%3Av');" title="Generate a card from The Wheeling Runner"> The Wheeling Runner </button>
+  <button type="button" onClick="generate_cards('wizard','t%3Awizard t%3Acreature -stamp%3Aacorn');" title="Generate a card from The Wizardly Barge"> The Wizardly Barge </button>
+  <button type="button" onClick="generate_cards('zabulous','-t%3Aaura is%3Apermanent -stamp%3Aacorn');" title="Generate a card from The Zabulous Cosplayer"> The Zabulous Cosplayer </button>
   </div>
 
 <div id="instructions">
@@ -320,9 +335,11 @@ Vig</a>, either "Jho" button for three random instants or sorceries from <a
 href="https://scryfall.com/card/pmoa/69/">Jhoria of the Ghitu</a>,
 "Sto" for a random equipment from <a
 href="https://scryfall.com/card/pmoa/77/stonehewer-giant-avatar">Stonehewer
-Giant</a>, or "Random" for a random nonland card from <a
+Giant</a></p>
+
+<p>"Random" can generate a random nonland card from <a
 href="https://scryfall.com/card/unk/RZ06h/the-snapstone-wielder">The Snapstone
-Wielder</a> or <a href="https://scryfall.com/card/sld/798/discord-lord-of-disharmony">Discord, Lord of Disharmony</a>.</p>
+Wielder</a> or <a href="https://scryfall.com/card/sld/798/discord-lord-of-disharmony">Discord, Lord of Disharmony</a>, and other Unknown event cards have their own buttons.</p>
 <p> For more information about <a href="https://www.reddit.com/r/magicTCG/comments/fn2rn7/mojhosto_is_an_online_only_format_where_you_can/">Mo-Jho-Sto</a>. </p>
 <p> Consider use with a
 <a href="https://bsky.app/profile/thepeopleseason.bsky.social/post/3mhszlmscms2k">portable thermal label printer</a>.</p>
